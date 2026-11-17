@@ -1,0 +1,9 @@
+relationship 8f1a2b3c4d5e6f708192a3b4c5d6e7f8
+	fromColumn: Games.'Added Month'
+	toColumn: Date.Date
+
+relationship 9a2b3c4d5e6f708192a3b4c5d6e7f809
+	isActive: false
+	fromColumn: Games.'Removed Month'
+	toColumn: Date.Date
+

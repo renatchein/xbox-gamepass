@@ -1,0 +1,28 @@
+model Model
+	culture: en-US
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: pt-BR
+	valueFilterBehavior: independent
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation PBI_ProTooling = ["DevMode","MCP-PBIModeling"]
+
+annotation PBI_QueryOrder = ["Games","Date"]
+
+ref table Games
+ref table Date
+ref table Plan
+ref table 'Games Per Month'
+ref table 'Avg Hours Override'
+ref table 'Retail Price Per Game'
+ref table _Measures
+ref table 'Explore By'
+ref table 'Months Per Game'
+ref table 'Cost Comparison'
+
+ref cultureInfo en-US
+

@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Report",
+    "displayName": "XboxGamePass"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "10d147c1-32dc-4df8-bfac-cdfb2bea84c2"
+  }
+}

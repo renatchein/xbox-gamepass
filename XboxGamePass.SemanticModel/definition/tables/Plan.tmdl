@@ -1,0 +1,39 @@
+table Plan
+	lineageTag: f4830a72-5c56-4d4f-a8e9-5e087fc21d84
+
+	column Plan
+		dataType: string
+		lineageTag: c4da702f-9b68-4399-b829-55e1e238a99a
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Plan]
+		sortByColumn: 'Plan Order'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Plan Order'
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 24b4e72f-2c22-4320-9e99-d3bf243054f4
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Plan Order]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Plan = calculated
+		mode: import
+		source =
+				DATATABLE(
+				    "Plan", STRING,
+				    "Plan Order", INTEGER,
+				    {
+				        {"Game Pass Ultimate", 0},
+				        {"Game Pass Premium", 1},
+				        {"Game Pass Essential", 2}
+				    }
+				)
+
+	annotation PBI_Id = 7a9c4e5b1f3d4a6a9c1b2d3e4f5a6b7c
+

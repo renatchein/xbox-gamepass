@@ -1,0 +1,233 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "0d7a661a15f5aa3f47d6",
+  "position": {
+    "x": 871.74374333722528,
+    "y": 581.6823188994365,
+    "z": 3000,
+    "height": 466.28153713386467,
+    "width": 1016.7744555561196,
+    "tabOrder": 1000
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Games"
+                    }
+                  },
+                  "Property": "Game"
+                }
+              },
+              "queryRef": "Games.Game",
+              "nativeQueryRef": "Game"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Games"
+                    }
+                  },
+                  "Property": "Genre"
+                }
+              },
+              "queryRef": "Games.Genre",
+              "nativeQueryRef": "Genre"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Games"
+                    }
+                  },
+                  "Property": "Metacritic"
+                }
+              },
+              "queryRef": "Games.Metacritic",
+              "nativeQueryRef": "Metacritic"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Games"
+                    }
+                  },
+                  "Property": "CompletionHours"
+                }
+              },
+              "queryRef": "Games.CompletionHours",
+              "nativeQueryRef": "Time to beat",
+              "displayName": "Time to beat"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Games"
+                    }
+                  },
+                  "Property": "ESRB Group"
+                }
+              },
+              "queryRef": "Games.ESRB Group",
+              "nativeQueryRef": "ESRB Group"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Games"
+                    }
+                  },
+                  "Property": "Added"
+                }
+              },
+              "queryRef": "Games.Added",
+              "nativeQueryRef": "Added"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "Games"
+                  }
+                },
+                "Property": "Game"
+              }
+            },
+            "direction": "Ascending"
+          }
+        ]
+      }
+    },
+    "objects": {
+      "columnHeaders": [
+        {
+          "properties": {
+            "columnAdjustment": {
+              "expr": {
+                "Literal": {
+                  "Value": "'growToFit'"
+                }
+              }
+            },
+            "autoSizeColumnWidth": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "columnWidth": [
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "462.9641497391544D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "Games.Game"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "71.1175484490521D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "Games.Metacritic"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "132.98042417314005D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "Games.Genre"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "87.48998212712767D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "Games.CompletionHours"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "105.03905192882173D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "Games.ESRB Group"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "98.1901066221892D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "Games.Added"
+          }
+        }
+      ]
+    }
+  }
+}

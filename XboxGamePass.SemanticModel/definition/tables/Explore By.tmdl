@@ -1,0 +1,25 @@
+table 'Explore By'
+	lineageTag: 16570442-fb10-4611-9f42-86f2a40c6dc9
+
+	column 'Explore By'
+		lineageTag: 869912b4-e8b8-4ea2-a4c3-9fa6cbc633b9
+		sourceColumn: [Value1]
+		sortByColumn: 'Explore By Order'
+
+	column 'Explore By Fields'
+		isHidden
+		lineageTag: 920e0e48-428c-4214-a806-f5cc0259a8b8
+		sourceColumn: [Value2]
+
+		extendedProperty ParameterMetadata = {"version":1,"kind":2}
+			type: string
+
+	column 'Explore By Order'
+		isHidden
+		lineageTag: 046d5476-7fcf-461a-b23a-9aa8012fd412
+		sourceColumn: [Value3]
+
+	partition 'Explore By' = calculated
+		mode: import
+		source = { ("Genre", NAMEOF('Games'[Genre]), 0), ("Review Score (Metacritic)", NAMEOF('Games'[Metacritic Bucket]), 1), ("Age Rating (ESRB)", NAMEOF('Games'[ESRB Group]), 2), ("Time to Beat", NAMEOF('Games'[Duration Bucket]), 3) }
+

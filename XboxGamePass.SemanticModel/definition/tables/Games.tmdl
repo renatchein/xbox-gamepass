@@ -1,0 +1,304 @@
+table Games
+	lineageTag: d07743a5-c45a-4133-ada0-e78b13c61e5e
+
+	column Game
+		dataType: string
+		lineageTag: c06fb3a5-aab3-4300-bf6c-00958bd1f9ae
+		summarizeBy: none
+		sourceColumn: Game
+
+		annotation SummarizationSetBy = Automatic
+
+	column System
+		dataType: string
+		lineageTag: 024c0b48-6e89-4cf0-ba57-f18a4f6f9a94
+		summarizeBy: none
+		sourceColumn: System
+
+		annotation SummarizationSetBy = Automatic
+
+	column xCloud
+		dataType: string
+		lineageTag: ff374843-e198-4a52-9884-3be0f7151919
+		summarizeBy: none
+		sourceColumn: xCloud
+
+		annotation SummarizationSetBy = Automatic
+
+	column Status
+		dataType: string
+		lineageTag: 8e6c91ac-860a-46bf-a327-b75e4440b35b
+		summarizeBy: none
+		sourceColumn: Status
+
+		annotation SummarizationSetBy = Automatic
+
+	column Added
+		dataType: dateTime
+		formatString: mmm d, yyyy
+		lineageTag: c3961d0f-2448-4fe9-998b-a7f9781b729f
+		summarizeBy: none
+		sourceColumn: Added
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Removed
+		dataType: dateTime
+		formatString: mmm d, yyyy
+		lineageTag: c3591c9b-c924-4ef6-a1d9-2e8e55361ea4
+		summarizeBy: none
+		sourceColumn: Removed
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column MonthsInGamePass
+		dataType: double
+		lineageTag: c5925212-5f46-441a-93ce-c7aac39b16f1
+		summarizeBy: average
+		sourceColumn: MonthsInGamePass
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column ReleaseDate
+		dataType: dateTime
+		formatString: mmm d, yyyy
+		lineageTag: 5e832d97-9d1e-4508-b495-20f96e329092
+		summarizeBy: none
+		sourceColumn: ReleaseDate
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column AgeYears
+		dataType: double
+		lineageTag: ea61e623-0963-41d7-abe4-dbcb614fbaa1
+		summarizeBy: average
+		sourceColumn: AgeYears
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Metacritic
+		dataType: double
+		formatString: 0
+		lineageTag: 67e881fc-4de5-4a24-95b2-50b4185cc206
+		summarizeBy: average
+		sourceColumn: Metacritic
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isDecimal":true}
+
+	column CompletionHours
+		dataType: double
+		formatString: 0
+		lineageTag: 8e0b8098-c094-4381-b457-00243cecfecd
+		summarizeBy: average
+		sourceColumn: CompletionHours
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isDecimal":true}
+
+	column Genre
+		dataType: string
+		lineageTag: 5dc59005-d8bb-437a-98dc-6f2060a237e2
+		summarizeBy: none
+		sourceColumn: Genre
+
+		annotation SummarizationSetBy = Automatic
+
+	column IsPC
+		dataType: boolean
+		lineageTag: 86863fcc-d5e8-4b94-9b90-b62e7bbcd153
+		summarizeBy: none
+		sourceColumn: IsPC
+
+		annotation SummarizationSetBy = Automatic
+
+	column IsPremium
+		dataType: boolean
+		lineageTag: ba8c5335-ec68-488d-b6b9-bf04fa60b9ab
+		summarizeBy: none
+		sourceColumn: IsPremium
+
+		annotation SummarizationSetBy = Automatic
+
+	column IsEssential
+		dataType: boolean
+		lineageTag: 2c2ca361-3852-439b-9a3f-417a30527488
+		summarizeBy: none
+		sourceColumn: IsEssential
+
+		annotation SummarizationSetBy = Automatic
+
+	column ESRB
+		dataType: string
+		lineageTag: 4857e6a5-8792-4a17-9db5-ed71b37a02fe
+		summarizeBy: none
+		sourceColumn: ESRB
+
+		annotation SummarizationSetBy = Automatic
+
+	column ESRBDescriptors
+		dataType: string
+		lineageTag: 30f25e84-b933-48e8-92d0-2757b90a8316
+		summarizeBy: none
+		sourceColumn: ESRBDescriptors
+
+		annotation SummarizationSetBy = Automatic
+
+	column IsEAPlay
+		dataType: boolean
+		lineageTag: 3a1dfb66-bc17-4b30-b680-88e21584caeb
+		summarizeBy: none
+		sourceColumn: IsEAPlay
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Added Month' = DATE(YEAR(Games[Added]), MONTH(Games[Added]), 1)
+		dataType: dateTime
+		formatString: mmm d, yyyy
+		lineageTag: e22e5095-5796-42d5-be09-b63f7ba56e5d
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Removed Month' = IF(ISBLANK(Games[Removed]), BLANK(), DATE(YEAR(Games[Removed]), MONTH(Games[Removed]), 1))
+		dataType: dateTime
+		formatString: mmm d, yyyy
+		lineageTag: d009c491-6fca-440a-8558-94ebb703a4bf
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Is Catalog Game' = Games[Status] <> "Coming Soon" && Games[Status] <> "Removed"
+		dataType: boolean
+		lineageTag: ea82b9bb-473b-4f40-8e1b-3c92dd78276a
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Is Leaving Soon' = Games[Status] = "Leaving Soon"
+		dataType: boolean
+		lineageTag: 82c72d20-4630-44ab-a284-f9774ab4d414
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Metacritic Bucket' =
+			SWITCH(
+			    TRUE(),
+			    ISBLANK(Games[Metacritic]), "Not Rated",
+			    Games[Metacritic] >= 90, "90-100 - Must Play",
+			    Games[Metacritic] >= 80, "80-89 - Great",
+			    Games[Metacritic] >= 70, "70-79 - Good",
+			    Games[Metacritic] >= 60, "60-69 - Mixed",
+			    "Below 60"
+			)
+		dataType: string
+		lineageTag: 51030b43-562a-4b34-8417-9d4b5b17e92d
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Metacritic Bucket Order' =
+			SWITCH(
+			    TRUE(),
+			    ISBLANK(Games[Metacritic]), 5,
+			    Games[Metacritic] >= 90, 0,
+			    Games[Metacritic] >= 80, 1,
+			    Games[Metacritic] >= 70, 2,
+			    Games[Metacritic] >= 60, 3,
+			    4
+			)
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 7348cbcf-b520-4120-845b-6f85489aecf6
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Duration Bucket' =
+			SWITCH(
+			    TRUE(),
+			    ISBLANK(Games[CompletionHours]), "Unknown",
+			    Games[CompletionHours] <= 5, "Quick (under 5h)",
+			    Games[CompletionHours] <= 15, "Short (5-15h)",
+			    Games[CompletionHours] <= 30, "Medium (15-30h)",
+			    Games[CompletionHours] <= 60, "Long (30-60h)",
+			    "Epic (60h+)"
+			)
+		dataType: string
+		lineageTag: 9dce1a78-495f-4811-8141-f7da4fcdb0e2
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Duration Bucket Order' =
+			SWITCH(
+			    TRUE(),
+			    ISBLANK(Games[CompletionHours]), 6,
+			    Games[CompletionHours] <= 5, 0,
+			    Games[CompletionHours] <= 15, 1,
+			    Games[CompletionHours] <= 30, 2,
+			    Games[CompletionHours] <= 60, 3,
+			    4
+			)
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: ab2c4dbd-e32b-4438-bf2b-9149e96ff958
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'ESRB Group' = IF(ISBLANK(Games[ESRB]) || Games[ESRB] = "" || Games[ESRB] = "RP", "Not Rated", Games[ESRB])
+		dataType: string
+		lineageTag: ec54e984-1a03-4f01-bc82-19b32135194d
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column RetailPrice
+		dataType: double
+		formatString: $#,##0.00
+		lineageTag: 5473f201-a0ee-4e95-83e2-1427295c2d04
+		summarizeBy: none
+		sourceColumn: RetailPrice
+
+	partition Games = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Renato\Dev\Projetos\PBI\XboxGamePass\data\Games.csv"),[Delimiter=",", Columns=19, Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Replaced Empties" = Table.ReplaceValue(#"Promoted Headers", "", null, Replacer.ReplaceValue, {"Added", "Removed", "ReleaseDate", "MonthsInGamePass", "AgeYears", "Metacritic", "CompletionHours", "ESRB", "ESRBDescriptors"}),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Replaced Empties", {
+				        {"Game", type text}, {"System", type text}, {"xCloud", type text}, {"Status", type text},
+				        {"Added", type date}, {"Removed", type date}, {"MonthsInGamePass", type number},
+				        {"ReleaseDate", type date}, {"AgeYears", type number}, {"Metacritic", type number},
+				        {"RetailPrice", type number}, {"CompletionHours", type number}, {"Genre", type text},
+				        {"IsPC", type logical}, {"IsPremium", type logical}, {"IsEssential", type logical},
+				        {"ESRB", type text}, {"ESRBDescriptors", type text}, {"IsEAPlay", type logical}
+				    }, "en-US")
+				in
+				    #"Changed Type"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Exception
+

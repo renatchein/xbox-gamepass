@@ -1,0 +1,18 @@
+table 'Avg Hours Override'
+	lineageTag: eceb3504-3b2b-4407-b345-1cb60dc53c14
+
+	measure 'Avg Hours Override Value' = SELECTEDVALUE('Avg Hours Override'[Avg Hours Override], 10)
+		formatString: 0.0
+		displayFolder: What-If Parameters
+		lineageTag: c329fcef-bdd1-48f0-9d59-88a641dca6c0
+
+	column 'Avg Hours Override'
+		lineageTag: 9f55e644-3dd0-4bb0-9d01-b3e04b5afb6b
+		sourceColumn: [Value]
+
+	partition 'Avg Hours Override' = calculated
+		mode: import
+		source = UNION(ROW("Value", 1), ROW("Value", 2), ROW("Value", 5), ROW("Value", 10), ROW("Value", 15), ROW("Value", 20), ROW("Value", 30), ROW("Value", 50))
+
+	annotation PBI_Id = 2b3c4d5e6f708a9b0c1d2e3f4a5b6c7d
+

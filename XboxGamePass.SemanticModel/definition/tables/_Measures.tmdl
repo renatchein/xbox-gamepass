@@ -1,0 +1,442 @@
+/// Central measures table organized by page
+table _Measures
+	lineageTag: 7664b4be-136c-4e1e-8964-1bb8608affc2
+
+	measure 'Total Games' = CALCULATE(DISTINCTCOUNT(Games[Game]), Games[Is Catalog Game] = TRUE)
+		formatString: #,##0
+		displayFolder: Core
+		lineageTag: ea618249-94de-47e0-adfd-d11c64efbe4c
+
+	measure 'Avg Metacritic' = CALCULATE(AVERAGE(Games[Metacritic]), Games[Is Catalog Game] = TRUE)
+		formatString: 0.0
+		displayFolder: Core
+		lineageTag: 60ad3e2c-7652-4724-8b1a-a73556f768b4
+
+	measure 'Avg Hours Per Game' = CALCULATE(AVERAGE(Games[CompletionHours]), Games[Is Catalog Game] = TRUE)
+		formatString: 0.0
+		displayFolder: Core
+		lineageTag: ea327c5d-8006-4bda-a33a-0ac23fdde16e
+
+	measure 'Games Added Last 90 Days' = CALCULATE(DISTINCTCOUNT(Games[Game]), Games[Added] >= TODAY() - 90, Games[Added] <= TODAY())
+		formatString: #,##0
+		displayFolder: Core
+		lineageTag: a88d6fc1-822b-4769-afea-0ff3b58d6275
+
+	measure 'Selected Plan' = SELECTEDVALUE(Plan[Plan], "Game Pass Ultimate")
+		displayFolder: Core
+		lineageTag: 014439c0-4613-4645-99c8-b686e2fb8c1a
+
+	measure 'Game Count' =
+			VAR _Plan = [Selected Plan]
+			RETURN
+			    SWITCH(
+			        TRUE(),
+			        _Plan = "Game Pass Premium", CALCULATE([Total Games], Games[IsPremium] = TRUE),
+			        _Plan = "Game Pass Essential", CALCULATE([Total Games], Games[IsEssential] = TRUE),
+			        [Total Games]
+			    )
+		formatString: #,##0
+		displayFolder: Core
+		lineageTag: 86adc342-0d5d-43de-8b89-fd24fb7b31b8
+
+	measure 'Avg Metacritic (Selected Plan)' =
+			VAR _Plan = [Selected Plan]
+			RETURN
+			    SWITCH(
+			        TRUE(),
+			        _Plan = "Game Pass Premium", CALCULATE([Avg Metacritic], Games[IsPremium] = TRUE),
+			        _Plan = "Game Pass Essential", CALCULATE([Avg Metacritic], Games[IsEssential] = TRUE),
+			        [Avg Metacritic]
+			    )
+		formatString: 0.0
+		displayFolder: Core
+		lineageTag: 946f21a1-c8a9-4569-8677-33e9179d01b6
+
+	measure 'Avg Hours Per Game (Selected Plan)' =
+			VAR _Plan = [Selected Plan]
+			RETURN
+			    SWITCH(
+			        TRUE(),
+			        _Plan = "Game Pass Premium", CALCULATE([Avg Hours Per Game], Games[IsPremium] = TRUE),
+			        _Plan = "Game Pass Essential", CALCULATE([Avg Hours Per Game], Games[IsEssential] = TRUE),
+			        [Avg Hours Per Game]
+			    )
+		formatString: 0.0
+		displayFolder: Core
+		lineageTag: 7aa4b9a7-20aa-4263-9778-462a6fe502a5
+
+	measure 'Plan Default Price' =
+			SWITCH(
+			    [Selected Plan],
+			    "Game Pass Ultimate", 19.99,
+			    "Game Pass Premium", 14.99,
+			    "Game Pass Essential", 10.99,
+			    19.99
+			)
+		formatString: "$"#,##0.00
+		displayFolder: Calculator
+		lineageTag: 50aae2f8-5d74-41aa-bbfd-2de14f50d907
+
+	measure 'Effective Monthly Price' = [Plan Default Price]
+		formatString: "$"#,##0.00
+		displayFolder: Calculator
+		lineageTag: a1234567-89ab-4cde-f012-3456789abcde
+
+	measure 'Effective Avg Hours Per Game' = IF([Avg Hours Override Value] > 0, [Avg Hours Override Value], [Avg Hours Per Game (Selected Plan)])
+		formatString: 0.0
+		displayFolder: Calculator
+		lineageTag: a78fa428-d324-4e90-8dac-3904e9761c4e
+
+	measure 'Cost Per Game' = DIVIDE([Effective Monthly Price], [Games Per Month Value])
+		formatString: "$"#,##0.00
+		displayFolder: Calculator
+		lineageTag: c2d1383d-1d95-4ac9-b021-af45d9cc537b
+
+	measure 'Cost Per Hour' = DIVIDE([Effective Monthly Price], [Games Per Month Value] * [Effective Avg Hours Per Game])
+		formatString: "$"#,##0.00
+		displayFolder: Calculator
+		lineageTag: 04ce0d1e-ce8e-45da-bdf7-ba3e37aa2af3
+
+	measure 'Buying Cost' = [Retail Price Per Game Value]
+		formatString: "$"#,##0.00
+		displayFolder: Calculator
+		lineageTag: 6fa884d9-8e7e-42e3-bd01-6c857562d08e
+
+	measure 'Savings Amount' = [Buying Cost] - [Subscription Cost Over Period]
+		formatString: "$"#,##0.00
+		displayFolder: Calculator
+		lineageTag: 47f4f511-e836-44fd-97a6-2288c61212c1
+
+	measure 'Savings %' = DIVIDE([Savings Amount], [Buying Cost])
+		formatString: 0.0%
+		displayFolder: Calculator
+		lineageTag: a6938309-eb51-481e-be30-381a5404530f
+
+	measure 'Verdict Text' =
+			SWITCH(
+			    TRUE(),
+			    [Savings %] >= 0.5, "Totally worth it",
+			    [Savings %] >= 0.15, "Worth it",
+			    [Savings %] >= 0, "Break-even",
+			    "Maybe not for you"
+			)
+		displayFolder: Calculator
+		lineageTag: cbb6c8d0-9ef7-4bfc-adb6-7dc6f9e065de
+
+	measure 'Verdict Color' =
+			SWITCH(
+			    TRUE(),
+			    [Savings %] >= 0.15, "#107C10",
+			    [Savings %] >= 0, "#D9B300",
+			    "#E74C3C"
+			)
+		displayFolder: Calculator
+		lineageTag: cb7536a8-dbca-4456-8abd-a4823bb4d39a
+
+	measure 'Games Added By Month' = CALCULATE(DISTINCTCOUNT(Games[Game]), Games[Status] <> "Coming Soon")
+		formatString: #,##0
+		displayFolder: Timeline
+		lineageTag: fa00a09d-720c-42d5-99bd-4ab259d74eab
+
+	measure 'Games Removed By Month' =
+			SUMX(
+			    VALUES('Date'[Date]),
+			    VAR _Y = YEAR('Date'[Date])
+			    VAR _M = MONTH('Date'[Date])
+			    RETURN
+			        CALCULATE(
+			            DISTINCTCOUNT(Games[Game]),
+			            ALL(Games),
+			            YEAR(Games[Removed Month]) = _Y,
+			            MONTH(Games[Removed Month]) = _M,
+			            NOT ISBLANK(Games[Removed])
+			        )
+			)
+		formatString: #,##0
+		displayFolder: Timeline
+		lineageTag: 0bd93833-68bb-48bf-bf44-c04c456f766e
+
+	measure 'Net Catalog Running Total' =
+			VAR _CurrentMonthEnd = MAX('Date'[Date])
+			VAR _AddedCum = CALCULATE([Games Added By Month], 'Date'[Date] <= _CurrentMonthEnd, ALLSELECTED('Date'))
+			VAR _RemovedCum = CALCULATE([Games Removed By Month], 'Date'[Date] <= _CurrentMonthEnd, ALLSELECTED('Date'))
+			RETURN
+			    _AddedCum - _RemovedCum
+		formatString: #,##0
+		displayFolder: Timeline
+		lineageTag: cab226c2-240d-49e5-8794-2e5e1ac0cfe6
+
+	measure 'Leaving Soon Count' = CALCULATE(DISTINCTCOUNT(Games[Game]), Games[Is Leaving Soon] = TRUE)
+		formatString: #,##0
+		displayFolder: Timeline
+		lineageTag: 3e5c06fa-508a-4961-acb5-e84a346017ae
+
+	measure 'Home Hero HTML' =
+			"<!DOCTYPE html><html><head><meta charset='utf-8'><style>
+			*{box-sizing:border-box;margin:0;padding:0}
+			html,body{height:100vh;width:100%;overflow:hidden;background:#0C0C0C;font-family:'Segoe UI',system-ui,sans-serif;color:#fff}
+			.wrap{display:flex;flex-direction:column;height:100vh;width:100%;padding:44px 56px;justify-content:center;gap:24px;background-image:linear-gradient(90deg, rgba(12,12,12,0.96) 0%, rgba(12,12,12,0.82) 35%, rgba(12,12,12,0.45) 68%, rgba(12,12,12,0.15) 100%), url('https://cms-assets.xboxservices.com/assets/7b/87/7b870cfd-0e44-4b67-9523-fbc879baae6f.jpg?n=XGP-PMP_Page-Hero-1084_grid-July-26_1920x900_01.jpg');background-size:cover;background-position:center}
+			.headline{font-size:56px;font-weight:700;line-height:1.08;max-width:920px;color:#FFFFFF !important}
+			.headline span{color:#14A814}
+			.sub{font-size:17px;color:#B3B3B3;max-width:640px;line-height:1.5}
+			.kpis{display:flex;gap:18px;margin-top:10px}
+			.kpi{background:rgba(26,26,26,0.85);border:1px solid #262626;border-radius:12px;padding:18px 24px;min-width:160px}
+			.kpi .v{font-size:30px;font-weight:700;color:#fff}
+			.kpi .l{font-size:11px;color:#8A8A8A;letter-spacing:1px;text-transform:uppercase;margin-top:4px}
+			.kpi .v.accent{color:#14A814}
+			</style></head><body>
+			<div class='wrap'>
+			 <div class='headline'>Hundreds of games.<br><span>One price.</span><br>Is it actually a good deal?</div>
+			 <div class='sub'>Plug in how you play on the Calculator page and see your real cost per game, cost per hour, and how it stacks up against buying games yourself.</div>
+			 <div class='kpis'>
+			  <div class='kpi'><div class='v accent'>" & FORMAT([Game Count], "#,##0") & "</div><div class='l'>Games in catalog</div></div>
+			  <div class='kpi'><div class='v'>" & FORMAT([Avg Metacritic (Selected Plan)], "0.0") & "</div><div class='l'>Avg Metacritic score</div></div>
+			  <div class='kpi'><div class='v'>" & FORMAT([Avg Hours Per Game (Selected Plan)], "0") & "h</div><div class='l'>Avg time to beat</div></div>
+			  <div class='kpi'><div class='v accent'>+" & FORMAT([Games Added Last 90 Days], "#,##0") & "</div><div class='l'>Added last 90 days</div></div>
+			 </div>
+			</div>
+			</body></html>"
+		displayFolder: Home
+		lineageTag: d560dadd-f0b5-4091-b62c-7002a6625620
+
+	measure 'Calculator Verdict HTML' =
+			"<!DOCTYPE html><html><head><meta charset='utf-8'><style>
+			*{box-sizing:border-box;margin:0;padding:0}
+			html,body{height:100vh;width:100%;overflow:hidden;background:#0C0C0C;font-family:'Segoe UI',system-ui,sans-serif;color:#fff}
+			.wrap{display:flex;align-items:center;height:100vh;width:100%;padding:0 36px;gap:32px;background:#151515;border-top:4px solid " & [Verdict Color] & "}
+			.badge{display:inline-flex;align-items:center;padding:16px 36px;border-radius:999px;font-size:26px;font-weight:700;color:#FFFFFF;width:fit-content;letter-spacing:0.5px;flex-shrink:0}
+			.row{display:flex;gap:36px;flex-shrink:0}
+			.stat .v{font-size:24px;font-weight:700;color:#fff}
+			.stat .v.accent{color:" & [Verdict Color] & "}
+			.stat .l{font-size:10px;color:#9A9A9A;letter-spacing:0.5px;text-transform:uppercase;margin-top:2px}
+			.note{font-size:12px;color:#8A8A8A;line-height:1.4;border-left:1px solid #2A2A2A;padding-left:24px}
+			</style></head><body>
+			<div class='wrap'>
+			 <div class='badge' style='background:" & [Verdict Color] & "'>" & [Verdict Text] & "</div>
+			 <div class='row'>
+			  <div class='stat'><div class='v'>" & FORMAT([Cost Per Game], "$#,##0.00") & "</div><div class='l'>Cost per game you play</div></div>
+			  <div class='stat'><div class='v'>" & FORMAT([Cost Per Hour], "$#,##0.00") & "</div><div class='l'>Cost per hour played</div></div>
+			  <div class='stat'><div class='v accent'>" & [Verdict Delta Amount Label] & "</div><div class='l'>" & [Verdict Delta Label] & "</div></div>
+			 </div>
+			 <div class='note'>Based on $" & FORMAT([Retail Price Per Game Value], "0.00") & " spent this month on ~" & FORMAT([Games Per Month Value], "0") & " game(s), vs " & FORMAT([Months Per Game Value], "0") & " month(s) on " & [Selected Plan] & " at $" & FORMAT([Effective Monthly Price], "0.00") & "/mo = $" & FORMAT([Subscription Cost Over Period], "0.00") & " total. Adjust My Monthly Game Style above to match your real numbers.</div>
+			</div>
+			</body></html>"
+		displayFolder: Calculator
+		lineageTag: 83a45f18-597c-404a-b7a4-3cb4f36fc4ca
+
+	measure 'Leaving Soon HTML' =
+			VAR _IsSingleMonth = DISTINCTCOUNT('Date'[Year Month]) = 1
+			VAR _SelMonthLabel = IF(_IsSingleMonth, SELECTEDVALUE('Date'[Year Month]), BLANK())
+			VAR _RemovedItems =
+			    CALCULATETABLE(
+			        SELECTCOLUMNS(Games, "G", Games[Game], "Gen", Games[Genre], "Rm", Games[Removed]),
+			        ALL(Games),
+			        YEAR(Games[Removed Month]) = YEAR(MAX('Date'[Date])),
+			        MONTH(Games[Removed Month]) = MONTH(MAX('Date'[Date])),
+			        NOT ISBLANK(Games[Removed])
+			    )
+			VAR _LeavingItems =
+			    CALCULATETABLE(
+			        SELECTCOLUMNS(Games, "G", Games[Game], "Gen", Games[Genre], "Rm", Games[Removed]),
+			        Games[Is Leaving Soon] = TRUE
+			    )
+			VAR _RemovedList =
+			    CONCATENATEX(
+			        _RemovedItems,
+			        "<div class='item'><div class='dot'></div><div class='txt'><div class='name'>" & [G] & "</div><div class='meta'>" & [Gen] & " &middot; removed " & FORMAT([Rm], "mmm d") & "</div></div></div>",
+			        "",
+			        [Rm], ASC
+			    )
+			VAR _LeavingList =
+			    CONCATENATEX(
+			        _LeavingItems,
+			        "<div class='item'><div class='dot'></div><div class='txt'><div class='name'>" & [G] & "</div><div class='meta'>" & [Gen] & " &middot; leaves " & FORMAT([Rm], "mmm d") & "</div></div></div>",
+			        "",
+			        [Rm], ASC
+			    )
+			VAR _List = IF(_IsSingleMonth, _RemovedList, _LeavingList)
+			VAR _Header = IF(_IsSingleMonth, "REMOVED IN " & UPPER(_SelMonthLabel), "LEAVING SOON")
+			VAR _EmptyMsg = IF(_IsSingleMonth, "No games were removed that month.", "Nothing leaving the catalog soon — binge away.")
+			VAR _Body = IF(ISBLANK(_List) || _List = "", "<div class='empty'>" & _EmptyMsg & "</div>", _List)
+			VAR _Html =
+			    "<!DOCTYPE html><html><head><meta charset='utf-8'><style>
+			    *{box-sizing:border-box;margin:0;padding:0}
+			    html,body{height:100vh;width:100%;overflow:hidden;background:#151515;font-family:'Segoe UI',system-ui,sans-serif;color:#fff}
+			    .wrap{display:flex;flex-direction:column;height:100vh;width:100%;padding:20px 24px;gap:10px}
+			    .hdr{font-size:13px;font-weight:700;letter-spacing:2px;color:#E74C3C;text-transform:uppercase}
+			    .list{display:flex;flex-direction:column;gap:10px;overflow:auto}
+			    .item{display:flex;align-items:center;gap:10px;background:#1E1E1E;border-radius:8px;padding:10px 14px}
+			    .dot{width:8px;height:8px;border-radius:50%;background:#E74C3C;flex:none}
+			    .name{font-size:14px;font-weight:600;color:#fff}
+			    .meta{font-size:11px;color:#9A9A9A;margin-top:2px}
+			    .empty{font-size:13px;color:#8A8A8A;padding:10px 0}
+			    </style></head><body>
+			    <div class='wrap'>
+			     <div class='hdr'>@HDR</div>
+			     <div class='list'>@BODY</div>
+			    </div>
+			    </body></html>"
+			RETURN
+			    SUBSTITUTE(SUBSTITUTE(_Html, "@HDR", _Header), "@BODY", _Body)
+		displayFolder: Timeline
+		lineageTag: c8295fa3-65fe-4757-b197-ea8dc6fffe7e
+
+	measure 'Recently Added HTML' =
+			VAR _Items =
+			    CALCULATETABLE(
+			        SELECTCOLUMNS(Games, "G", Games[Game], "Gen", Games[Genre], "Mc", Games[Metacritic], "Ad", Games[Added]),
+			        Games[Is Catalog Game] = TRUE
+			    )
+			VAR _Top = TOPN(8, _Items, [Ad], DESC)
+			VAR _List =
+			    CONCATENATEX(
+			        _Top,
+			        "<div class='item'><div class='dot'></div><div class='txt'><div class='name'>" & [G] & "</div><div class='meta'>" & [Gen] & IF(ISBLANK([Mc]), "", " &middot; Metacritic " & [Mc]) & " &middot; added " & FORMAT([Ad], "mmm d") & "</div></div></div>",
+			        "",
+			        [Ad], DESC
+			    )
+			RETURN
+			    "<!DOCTYPE html><html><head><meta charset='utf-8'><style>
+			    *{box-sizing:border-box;margin:0;padding:0}
+			    html,body{height:100vh;width:100%;overflow:hidden;background:#151515;font-family:'Segoe UI',system-ui,sans-serif;color:#fff}
+			    .wrap{display:flex;flex-direction:column;height:100vh;width:100%;padding:20px 24px;gap:10px}
+			    .hdr{font-size:13px;font-weight:700;letter-spacing:2px;color:#14A814;text-transform:uppercase}
+			    .list{display:flex;flex-direction:column;gap:10px;overflow:auto}
+			    .item{display:flex;align-items:center;gap:10px;background:#1E1E1E;border-radius:8px;padding:10px 14px}
+			    .dot{width:8px;height:8px;border-radius:50%;background:#14A814;flex:none}
+			    .name{font-size:14px;font-weight:600;color:#fff}
+			    .meta{font-size:11px;color:#9A9A9A;margin-top:2px}
+			    </style></head><body>
+			    <div class='wrap'>
+			     <div class='hdr'>RECENTLY ADDED</div>
+			     <div class='list'>" & _List & "</div>
+			    </div>
+			    </body></html>"
+		displayFolder: Timeline
+		lineageTag: 743a6dcb-2cb9-4098-949b-c3d570089ed8
+
+	measure 'Plan Comparison HTML' =
+			VAR _UltCount = CALCULATE([Total Games])
+			VAR _PremCount = CALCULATE([Total Games], Games[IsPremium] = TRUE)
+			VAR _EssCount = CALCULATE([Total Games], Games[IsEssential] = TRUE)
+			VAR _UltMc = CALCULATE([Avg Metacritic])
+			VAR _PremMc = CALCULATE([Avg Metacritic], Games[IsPremium] = TRUE)
+			VAR _EssMc = CALCULATE([Avg Metacritic], Games[IsEssential] = TRUE)
+			VAR _EssGames = CONCATENATEX(FILTER(Games, Games[IsEssential] = TRUE), "<div class='g'><span class='gn'>" & Games[Game] & "</span><span class='gd'>" & FORMAT(Games[Added], "mmm yyyy") & "</span></div>", "", Games[Added], DESC)
+			VAR _PremGames = CONCATENATEX(FILTER(Games, Games[IsPremium] = TRUE && Games[IsEAPlay] = FALSE), "<div class='g'><span class='gn'>" & Games[Game] & "</span><span class='gd'>" & FORMAT(Games[Added], "mmm yyyy") & "</span></div>", "", Games[Added], DESC)
+			VAR _UltGames = CONCATENATEX(Games, "<div class='g'><span class='gn'>" & Games[Game] & "</span><span class='gd'>" & FORMAT(Games[Added], "mmm yyyy") & "</span></div>", "", Games[Added], DESC)
+			VAR _Card =
+			    "<div class='card'><div class='name'>@NAME</div><div class='price'>@PRICE<span>/mo</span></div><div class='stat'><span class='v'>@COUNT</span><span class='l'>games</span></div><div class='stat'><span class='v'>@MC</span><span class='l'>avg Metacritic</span></div><div class='feat'><div class='f @F1'>Day-one new releases</div><div class='f on'>Cloud play — @CLOUDH/mo</div><div class='f @F3'>EA Play included</div><div class='f @F4'>Club Fortnite</div><div class='f @F5'>Ubisoft+ Classics</div></div><div class='games'>@GAMES</div></div>"
+			VAR _Ult = SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(_Card, "@NAME", "Game Pass Ultimate"), "@PRICE", "$19.99"), "@COUNT", FORMAT(_UltCount, "#,##0")), "@MC", FORMAT(_UltMc, "0.0")), "@F1", "on"), "@CLOUDH", "15h"), "@F3", "on"), "@F4", "on"), "@F5", "on"), "@GAMES", _UltGames)
+			VAR _Prem = SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(_Card, "@NAME", "Game Pass Premium"), "@PRICE", "$14.99"), "@COUNT", FORMAT(_PremCount, "#,##0")), "@MC", FORMAT(_PremMc, "0.0")), "@F1", "off"), "@CLOUDH", "10h"), "@F3", "off"), "@F4", "off"), "@F5", "off"), "@GAMES", _PremGames)
+			VAR _Ess = SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(_Card, "@NAME", "Game Pass Essential"), "@PRICE", "$10.99"), "@COUNT", FORMAT(_EssCount, "#,##0")), "@MC", FORMAT(_EssMc, "0.0")), "@F1", "off"), "@CLOUDH", "5h"), "@F3", "off"), "@F4", "off"), "@F5", "off"), "@GAMES", _EssGames)
+			RETURN
+			    "<!DOCTYPE html><html><head><meta charset='utf-8'><style>
+			    *{box-sizing:border-box;margin:0;padding:0}
+			    html,body{height:100vh;width:100%;overflow:hidden;background:#0C0C0C;font-family:'Segoe UI',system-ui,sans-serif;color:#fff}
+			    .row{display:flex;gap:20px;height:100vh;width:100%;padding:28px;align-items:center}
+			    .card{flex:1;height:100%;background:#1A1A1A;border:1px solid #262626;border-radius:14px;padding:26px;display:flex;flex-direction:column;gap:10px;overflow:hidden}
+			    .name{font-size:16px;font-weight:700;color:#fff}
+			    .price{font-size:34px;font-weight:700;color:#14A814}
+			    .price span{font-size:14px;color:#9A9A9A;font-weight:400}
+			    .stat{display:flex;align-items:baseline;gap:6px;margin-top:4px}
+			    .stat .v{font-size:18px;font-weight:700;color:#fff}
+			    .stat .l{font-size:11px;color:#8A8A8A;letter-spacing:0.5px;text-transform:uppercase}
+			    .feat{margin-top:14px;display:flex;flex-direction:column;gap:8px;flex-shrink:0}
+			    .f{font-size:12px;padding-left:20px;position:relative;color:#9A9A9A}
+			    .f.on{color:#fff}
+			    .f.on::before{content:'';position:absolute;left:0;top:4px;width:10px;height:10px;border-radius:50%;background:#14A814}
+			    .f.off::before{content:'';position:absolute;left:0;top:4px;width:10px;height:10px;border-radius:50%;background:#3A3A3A}
+			    .games{margin-top:14px;flex:1 1 0;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:6px;padding-right:4px}
+			    .games::-webkit-scrollbar{width:6px}
+			    .games::-webkit-scrollbar-thumb{background:#333;border-radius:3px}
+			    .g{flex-shrink:0;display:flex;align-items:center;justify-content:space-between;gap:10px;line-height:20px;padding:8px 12px;background:#141414;border-radius:6px}
+			    .gn{font-size:15px;font-weight:500;color:#E8E8E8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+			    .gd{flex-shrink:0;font-size:12px;font-weight:400;color:#8A8A8A;white-space:nowrap}
+			    </style></head><body>
+			    <div class='row'>" & _Ess & _Prem & _Ult & "</div>
+			    </body></html>"
+		displayFolder: Plans
+		lineageTag: 10635a85-afbc-4d49-8225-44ca3869405f
+
+	measure 'Verdict Delta Label' =
+			IF(
+			    [Savings %] >= 0,
+			    FORMAT([Savings %], "0%") & " cheaper than buying it yourself",
+			    FORMAT(ABS([Savings %]), "0%") & " more expensive than buying it yourself"
+			)
+		displayFolder: Calculator
+		lineageTag: 1f2e3d4c5b6a7988796a5b4c3d2e1f00
+
+	measure 'Verdict Delta Amount Label' =
+			VAR _Diff = [Savings Amount]
+			RETURN
+			    IF(
+			        _Diff >= 0,
+			        "You save " & FORMAT(_Diff, "$#,##0.00"),
+			        "Costs " & FORMAT(ABS(_Diff), "$#,##0.00") & " more"
+			    )
+		displayFolder: Calculator
+		lineageTag: 2e3d4c5b6a79887a6b5c4d3e2f1a0b11
+
+	measure 'Page Header Wordmark HTML' =
+			"<!DOCTYPE html><html><head><meta charset='utf-8'><style>
+			*{box-sizing:border-box;margin:0;padding:0}
+			body{background:transparent;font-family:'Segoe UI',system-ui,sans-serif}
+			.row{display:flex;align-items:center;gap:10px;height:53px;width:100%}
+			.mark{flex:none;width:32px;height:32px}
+			.wm{font-size:22px;line-height:32px;font-weight:800;letter-spacing:0.5px;color:#FFFFFF;text-transform:uppercase;white-space:nowrap}
+			</style></head><body><div class='row'><svg class='mark' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'><path d='M 50 8 C 26.8 8 8 26.8 8 50 C 8 73.2 26.8 92 50 92 C 20 72 20 28 50 8 Z M 50 8 C 73.2 8 92 26.8 92 50 C 92 73.2 73.2 92 50 92 C 80 72 80 28 50 8 Z' fill='#FFFFFF'/></svg><div class='wm'>XBOX GAME PASS</div></div></body></html>"
+		displayFolder: Shared
+		lineageTag: 1a2b3c4d-5e6f-4708-9203-445566778899
+
+	measure 'Rounded Panel Background HTML' =
+			"<!DOCTYPE html><html><head><meta charset='utf-8'><style>
+			*{box-sizing:border-box;margin:0;padding:0}
+			html{height:100%}
+			html,body{height:100%;width:100%;overflow:hidden;background:transparent}
+			.panel{height:100%;width:100%;background:#151515;border:2px solid #107C10;border-radius:16px}
+			</style></head><body><div class='panel'></div></body></html>"
+		displayFolder: Shared
+		lineageTag: 2b3c4d5e-6f70-4819-2034-455667788990
+
+	measure 'Cost Comparison Value' =
+			SWITCH(
+			    SELECTEDVALUE('Cost Comparison'[Label]),
+			    "Buying it yourself", [Buying Cost],
+			    "Game Pass Ultimate", 19.99 * [Months Per Game Value],
+			    "Game Pass Premium", 14.99 * [Months Per Game Value],
+			    "Game Pass Essential", 10.99 * [Months Per Game Value],
+			    BLANK()
+			)
+		formatString: "$"#,##0.00
+		displayFolder: Calculator
+		lineageTag: c3412785-e990-4627-9354-3bf65c88a5db
+
+	measure 'Subscription Cost Over Period' = [Effective Monthly Price] * [Months Per Game Value]
+		formatString: "$"#,##0.00
+		displayFolder: Calculator
+		lineageTag: 5d6e7f80-9102-4344-5566-778899aabbcc
+
+	measure 'Cost Comparison Color' =
+			SWITCH(
+			    SELECTEDVALUE('Cost Comparison'[Kind]),
+			    "Buy", "#1E88E5",
+			    "Subscribe", "#107C10",
+			    "#6B6B6B"
+			)
+		displayFolder: Calculator
+		lineageTag: 6e7f8091-0234-4556-6778-8899aabbccdd
+
+	column x
+		isHidden
+		lineageTag: 5b0b529a-ddca-44fa-8b49-6d63a0a4910b
+		isNameInferred
+		sourceColumn: [x]
+
+	partition _Measures = calculated
+		mode: import
+		source = ROW("x", 0)
+
+	annotation PBI_Id = 5e6f708192a3b4c0d1e2f3a4b5c6d7e8
+

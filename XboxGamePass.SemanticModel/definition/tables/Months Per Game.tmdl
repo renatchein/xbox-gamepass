@@ -1,0 +1,19 @@
+table 'Months Per Game'
+	lineageTag: e1b2c3d4-5f60-4718-9293-0a1b2c3d4e5f
+
+	measure 'Months Per Game Value' = SELECTEDVALUE('Months Per Game'[Value], 2)
+		formatString: 0
+		displayFolder: What-If Parameters
+		lineageTag: f2c3d4e5-6071-4829-30a1-b2c3d4e5f607
+
+	column Value
+		lineageTag: 03d4e5f6-0718-4293-0a1b-2c3d4e5f6071
+		isNameInferred
+		sourceColumn: [Value]
+
+	partition 'Months Per Game' = calculated
+		mode: import
+		source = UNION(ROW("Value", 1), ROW("Value", 2), ROW("Value", 3), ROW("Value", 4), ROW("Value", 6), ROW("Value", 9), ROW("Value", 12), ROW("Value", 18), ROW("Value", 24))
+
+	annotation PBI_Id = 5e6f70819203445c6d7e8f90a1b2c3d4
+

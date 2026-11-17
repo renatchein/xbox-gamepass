@@ -1,0 +1,19 @@
+table 'Retail Price Per Game'
+	lineageTag: 54b3a23e-5a40-4ff0-8aab-cc56b2d86ae8
+
+	measure 'Retail Price Per Game Value' = SELECTEDVALUE('Retail Price Per Game'[Value], 20)
+		formatString: "$"#,##0.00
+		displayFolder: What-If Parameters
+		lineageTag: 8847f03b-41d4-422a-b6be-1ad07a52d3d8
+
+	column Value
+		lineageTag: b0d738e1-a804-4861-973d-958b020ec79f
+		isNameInferred
+		sourceColumn: [Value]
+
+	partition 'Retail Price Per Game' = calculated
+		mode: import
+		source = UNION(ROW("Value", 5), ROW("Value", 10), ROW("Value", 15), ROW("Value", 20), ROW("Value", 30), ROW("Value", 50), ROW("Value", 60), ROW("Value", 70))
+
+	annotation PBI_Id = 3c4d5e6f708192a0b1c2d3e4f5a6b7c8
+

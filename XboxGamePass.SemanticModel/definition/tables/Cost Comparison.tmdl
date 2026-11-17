@@ -1,0 +1,35 @@
+table 'Cost Comparison'
+	lineageTag: 6f708192-0344-45c6-d7e8-f90a1b2c3d4e
+
+	column Label
+		lineageTag: a4176043-e790-40b3-b492-0cf27349adac
+		isNameInferred
+		sourceColumn: [Label]
+
+	column SortOrder
+		lineageTag: 4fdca3f1-9108-45cf-9644-1462fd27b4a0
+		isNameInferred
+		sourceColumn: [SortOrder]
+
+	column Kind
+		lineageTag: 561843a7-0062-4628-a06a-e87a7ce15050
+		isNameInferred
+		sourceColumn: [Kind]
+
+	partition 'Cost Comparison' = calculated
+		mode: import
+		source =
+				DATATABLE(
+				    "Label", STRING,
+				    "SortOrder", INTEGER,
+				    "Kind", STRING,
+				    {
+				        {"Buying it yourself", 0, "Buy"},
+				        {"Game Pass Ultimate", 1, "Subscribe"},
+				        {"Game Pass Premium", 2, "Subscribe"},
+				        {"Game Pass Essential", 3, "Subscribe"}
+				    }
+				)
+
+	annotation PBI_Id = a1b2c3d4e5f607182930445566778899
+

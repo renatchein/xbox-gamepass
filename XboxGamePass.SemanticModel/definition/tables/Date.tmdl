@@ -1,0 +1,64 @@
+table Date
+	lineageTag: db856a54-e10c-46d3-b1a4-5b998d44b1c8
+
+	column Date
+		dataType: dateTime
+		formatString: mmm d, yyyy
+		lineageTag: bc5b06c1-670c-4b07-a306-c12a642c2023
+		summarizeBy: none
+		sourceColumn: Date
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Year
+		dataType: int64
+		formatString: 0
+		lineageTag: f9337069-13d7-4b6a-bd68-55a252adeb1d
+		summarizeBy: none
+		sourceColumn: Year
+
+		annotation SummarizationSetBy = Automatic
+
+	column MonthNumber
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: d4e94696-3fc9-43dc-a8c7-a9a9ddaaa639
+		summarizeBy: none
+		sourceColumn: MonthNumber
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Year Month Sort' = 'Date'[Year] * 100 + 'Date'[MonthNumber]
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 4ec1b80c-66d0-4280-8d06-1996040eecb9
+
+	column 'Year Month' = FORMAT('Date'[Date], "mmm yyyy")
+		dataType: string
+		lineageTag: 7f5e2eb9-7276-4190-8f9a-36e52558fff6
+		sortByColumn: 'Year Month Sort'
+
+	partition Date = m
+		mode: import
+		source =
+				let
+				    StartDate = #date(2016, 5, 1),
+				    EndDate = Date.EndOfMonth(DateTime.Date(DateTime.LocalNow())),
+				    DayCount = Duration.Days(EndDate - StartDate) + 1,
+				    AllDays = List.Dates(StartDate, DayCount, #duration(1,0,0,0)),
+				    MonthStarts = List.Distinct(List.Transform(AllDays, each Date.StartOfMonth(_))),
+				    ToTable = Table.FromList(MonthStarts, Splitter.SplitByNothing(), {"Date"}),
+				    #"Changed Type" = Table.TransformColumnTypes(ToTable, {{"Date", type date}}),
+				    #"Added Year" = Table.AddColumn(#"Changed Type", "Year", each Date.Year([Date]), Int64.Type),
+				    #"Added Month Number" = Table.AddColumn(#"Added Year", "MonthNumber", each Date.Month([Date]), Int64.Type)
+				in
+				    #"Added Month Number"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

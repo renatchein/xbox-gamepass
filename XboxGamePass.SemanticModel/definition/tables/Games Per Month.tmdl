@@ -1,0 +1,18 @@
+table 'Games Per Month'
+	lineageTag: a3c792f8-5282-479f-96d5-eb46499264ca
+
+	measure 'Games Per Month Value' = SELECTEDVALUE('Games Per Month'[Games Per Month], 4)
+		formatString: 0
+		displayFolder: What-If Parameters
+		lineageTag: bb8d59f5-629b-41a4-9a57-2be6760d8350
+
+	column 'Games Per Month'
+		lineageTag: 63c32e73-d00a-4227-924a-00e0395388b1
+		sourceColumn: [Value]
+
+	partition 'Games Per Month' = calculated
+		mode: import
+		source = GENERATESERIES(1, 20, 1)
+
+	annotation PBI_Id = 1a2b3c4d5e6f47a8b9c0d1e2f3a4b5c6
+
