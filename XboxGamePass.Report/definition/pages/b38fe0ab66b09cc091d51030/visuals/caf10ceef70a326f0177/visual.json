@@ -166,7 +166,20 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Ranked by games (drill: Genre -> Score -> Age rating -> Duration)'"
+                  "Value": "'Ranked by games'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "background": [
+        {
+          "properties": {
+            "transparency": {
+              "expr": {
+                "Literal": {
+                  "Value": "35D"
                 }
               }
             }

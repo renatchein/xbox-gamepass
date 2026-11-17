@@ -184,7 +184,7 @@ table Games
 
 		annotation UnderlyingDateTimeDataType = Date
 
-	column 'Is Catalog Game' = Games[Status] <> "Coming Soon" && Games[Status] <> "Removed"
+	column 'Is Catalog Game' = Games[Status] <> "Coming Soon" && Games[Status] <> "Removed" && Games[Status] <> "GwG Permanent"
 		dataType: boolean
 		lineageTag: ea82b9bb-473b-4f40-8e1b-3c92dd78276a
 		summarizeBy: none

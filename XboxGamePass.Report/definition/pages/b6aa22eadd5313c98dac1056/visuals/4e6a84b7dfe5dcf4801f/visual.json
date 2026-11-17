@@ -5,12 +5,12 @@
     "x": 41.428571428571431,
     "y": 108.57142857142858,
     "z": 1000,
-    "height": 514.62510787349618,
+    "height": 245.31255393674809,
     "width": 1837.0556881059952,
     "tabOrder": 3000
   },
   "visual": {
-    "visualType": "lineClusteredColumnComboChart",
+    "visualType": "lineChart",
     "query": {
       "queryState": {
         "Category": {
@@ -46,7 +46,8 @@
                 }
               },
               "queryRef": "_Measures.Games Added By Month",
-              "nativeQueryRef": "Games Added By Month"
+              "nativeQueryRef": "Games Added",
+              "displayName": "Games Added"
             },
             {
               "field": {
@@ -60,43 +61,12 @@
                 }
               },
               "queryRef": "_Measures.Games Removed By Month",
-              "nativeQueryRef": "Games Removed By Month"
+              "nativeQueryRef": "Games Removed",
+              "displayName": "Games Removed"
             }
           ]
         },
         "Y": {
-          "projections": [
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "_Measures"
-                    }
-                  },
-                  "Property": "Games Added By Month"
-                }
-              },
-              "queryRef": "_Measures.Games Added By Month",
-              "nativeQueryRef": "Games Added By Month"
-            },
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "_Measures"
-                    }
-                  },
-                  "Property": "Games Removed By Month"
-                }
-              },
-              "queryRef": "_Measures.Games Removed By Month",
-              "nativeQueryRef": "Games Removed By Month"
-            }
-          ]
-        },
-        "Y2": {
           "projections": [
             {
               "field": {
@@ -142,42 +112,6 @@
               "solid": {
                 "color": {
                   "expr": {
-                    "Literal": {
-                      "Value": "'#14A814'"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "selector": {
-            "metadata": "_Measures.Games Added By Month"
-          }
-        },
-        {
-          "properties": {
-            "fill": {
-              "solid": {
-                "color": {
-                  "expr": {
-                    "Literal": {
-                      "Value": "'#E74C3C'"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "selector": {
-            "metadata": "_Measures.Games Removed By Month"
-          }
-        },
-        {
-          "properties": {
-            "fill": {
-              "solid": {
-                "color": {
-                  "expr": {
                     "ThemeDataColor": {
                       "ColorId": 7,
                       "Percent": 0
@@ -206,6 +140,63 @@
           "selector": {
             "metadata": "_Measures.Net Catalog Running Total"
           }
+        },
+        {
+          "properties": {
+            "strokeColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 5,
+                      "Percent": 0
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "trend": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "_Measures.Net Catalog Running Total"
+          }
+        },
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "displayName": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Trend line 1'"
+                }
+              }
+            },
+            "transparency": {
+              "expr": {
+                "Literal": {
+                  "Value": "59D"
+                }
+              }
+            }
+          }
         }
       ],
       "legend": [
@@ -227,6 +218,68 @@
             }
           }
         }
+      ],
+      "categoryAxis": [
+        {
+          "properties": {
+            "labelColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#B3B3B3'"
+                    }
+                  }
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "12D"
+                }
+              }
+            },
+            "showAxisTitle": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "valueAxis": [
+        {
+          "properties": {
+            "labelColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#B3B3B3'"
+                    }
+                  }
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "12D"
+                }
+              }
+            },
+            "showAxisTitle": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
       ]
     },
     "visualContainerObjects": {
@@ -243,7 +296,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Catalog size evolution by month'"
+                  "Value": "'Net catalog running total'"
                 }
               }
             },
@@ -261,27 +314,27 @@
           }
         }
       ],
-      "subTitle": [
+      "background": [
         {
           "properties": {
-            "text": {
-              "expr": {
-                "Literal": {
-                  "Value": "'Games Added and Removed By Month, Net Catalog Running Total'"
-                }
-              }
-            },
             "show": {
               "expr": {
                 "Literal": {
-                  "Value": "false"
+                  "Value": "true"
+                }
+              }
+            },
+            "transparency": {
+              "expr": {
+                "Literal": {
+                  "Value": "35D"
                 }
               }
             }
           }
         }
       ],
-      "background": [
+      "subTitle": [
         {
           "properties": {
             "show": {

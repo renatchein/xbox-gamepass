@@ -204,12 +204,13 @@ table _Measures
 			*{box-sizing:border-box;margin:0;padding:0}
 			html,body{height:100vh;width:100%;overflow:hidden;background:#0C0C0C;font-family:'Segoe UI',system-ui,sans-serif;color:#fff}
 			.wrap{display:flex;align-items:center;height:100vh;width:100%;padding:0 36px;gap:32px;background:#151515;border-top:4px solid " & [Verdict Color] & "}
-			.badge{display:inline-flex;align-items:center;padding:16px 36px;border-radius:999px;font-size:26px;font-weight:700;color:#FFFFFF;width:fit-content;letter-spacing:0.5px;flex-shrink:0}
-			.row{display:flex;gap:36px;flex-shrink:0}
-			.stat .v{font-size:24px;font-weight:700;color:#fff}
-			.stat .v.accent{color:" & [Verdict Color] & "}
-			.stat .l{font-size:10px;color:#9A9A9A;letter-spacing:0.5px;text-transform:uppercase;margin-top:2px}
-			.note{font-size:12px;color:#8A8A8A;line-height:1.4;border-left:1px solid #2A2A2A;padding-left:24px}
+			.badge{display:inline-flex;align-items:center;padding:16px 36px;border-radius:999px;font-size:26px;font-weight:700;color:#FFFFFF;width:fit-content;flex-shrink:0;letter-spacing:0.5px}
+			.row{display:flex;align-items:center;gap:28px;flex-shrink:0}
+			.stat{display:flex;flex-direction:column;justify-content:center}
+			.stat .v{font-size:24px;font-weight:700;color:#fff;white-space:nowrap}
+			.stat .v.accent{color:#9BE564}
+			.stat .l{font-size:15px;color:#9A9A9A;letter-spacing:0.5px;text-transform:uppercase;margin-top:2px;white-space:normal;line-height:1.3;max-width:200px}
+			.note{font-size:18px;color:#ADADAD;line-height:1.4;border-left:1px solid #2A2A2A;padding-left:32px;white-space:normal;max-width:700px}
 			</style></head><body>
 			<div class='wrap'>
 			 <div class='badge' style='background:" & [Verdict Color] & "'>" & [Verdict Text] & "</div>
@@ -218,7 +219,7 @@ table _Measures
 			  <div class='stat'><div class='v'>" & FORMAT([Cost Per Hour], "$#,##0.00") & "</div><div class='l'>Cost per hour played</div></div>
 			  <div class='stat'><div class='v accent'>" & [Verdict Delta Amount Label] & "</div><div class='l'>" & [Verdict Delta Label] & "</div></div>
 			 </div>
-			 <div class='note'>Based on $" & FORMAT([Retail Price Per Game Value], "0.00") & " spent this month on ~" & FORMAT([Games Per Month Value], "0") & " game(s), vs " & FORMAT([Months Per Game Value], "0") & " month(s) on " & [Selected Plan] & " at $" & FORMAT([Effective Monthly Price], "0.00") & "/mo = $" & FORMAT([Subscription Cost Over Period], "0.00") & " total. Adjust My Monthly Game Style above to match your real numbers.</div>
+			 <div class='note'>Based on $" & FORMAT([Retail Price Per Game Value], "0.00") & " spent this month on ~" & FORMAT([Games Per Month Value], "0") & " game(s), vs " & FORMAT([Months Per Game Value], "0") & " month(s) on " & [Selected Plan] & " at $" & FORMAT([Effective Monthly Price], "0.00") & "/mo = $" & FORMAT([Subscription Cost Over Period], "0.00") & " total.<br>Adjust My Monthly Game Style above to match your real numbers.</div>
 			</div>
 			</body></html>"
 		displayFolder: Calculator
@@ -255,7 +256,8 @@ table _Measures
 			        [Rm], ASC
 			    )
 			VAR _List = IF(_IsSingleMonth, _RemovedList, _LeavingList)
-			VAR _Header = IF(_IsSingleMonth, "REMOVED IN " & UPPER(_SelMonthLabel), "LEAVING SOON")
+			VAR _Count = IF(_IsSingleMonth, COUNTROWS(_RemovedItems), COUNTROWS(_LeavingItems)) + 0
+			VAR _Header = IF(_IsSingleMonth, "REMOVED IN " & UPPER(_SelMonthLabel) & " (" & _Count & ")", "LEAVING SOON (" & _Count & ")")
 			VAR _EmptyMsg = IF(_IsSingleMonth, "No games were removed that month.", "Nothing leaving the catalog soon — binge away.")
 			VAR _Body = IF(ISBLANK(_List) || _List = "", "<div class='empty'>" & _EmptyMsg & "</div>", _List)
 			VAR _Html =
@@ -267,8 +269,8 @@ table _Measures
 			    .list{display:flex;flex-direction:column;gap:10px;overflow:auto}
 			    .item{display:flex;align-items:center;gap:10px;background:#1E1E1E;border-radius:8px;padding:10px 14px}
 			    .dot{width:8px;height:8px;border-radius:50%;background:#E74C3C;flex:none}
-			    .name{font-size:14px;font-weight:600;color:#fff}
-			    .meta{font-size:11px;color:#9A9A9A;margin-top:2px}
+			    .name{font-size:21px;font-weight:600;color:#fff}
+			    .meta{font-size:16.5px;color:#9A9A9A;margin-top:2px}
 			    .empty{font-size:13px;color:#8A8A8A;padding:10px 0}
 			    </style></head><body>
 			    <div class='wrap'>
@@ -288,6 +290,7 @@ table _Measures
 			        Games[Is Catalog Game] = TRUE
 			    )
 			VAR _Top = TOPN(8, _Items, [Ad], DESC)
+			VAR _Count = COUNTROWS(_Top)
 			VAR _List =
 			    CONCATENATEX(
 			        _Top,
@@ -304,11 +307,11 @@ table _Measures
 			    .list{display:flex;flex-direction:column;gap:10px;overflow:auto}
 			    .item{display:flex;align-items:center;gap:10px;background:#1E1E1E;border-radius:8px;padding:10px 14px}
 			    .dot{width:8px;height:8px;border-radius:50%;background:#14A814;flex:none}
-			    .name{font-size:14px;font-weight:600;color:#fff}
-			    .meta{font-size:11px;color:#9A9A9A;margin-top:2px}
+			    .name{font-size:21px;font-weight:600;color:#fff}
+			    .meta{font-size:16.5px;color:#9A9A9A;margin-top:2px}
 			    </style></head><body>
 			    <div class='wrap'>
-			     <div class='hdr'>RECENTLY ADDED</div>
+			     <div class='hdr'>RECENTLY ADDED (" & _Count & ")</div>
 			     <div class='list'>" & _List & "</div>
 			    </div>
 			    </body></html>"
@@ -333,7 +336,7 @@ table _Measures
 			RETURN
 			    "<!DOCTYPE html><html><head><meta charset='utf-8'><style>
 			    *{box-sizing:border-box;margin:0;padding:0}
-			    html,body{height:100vh;width:100%;overflow:hidden;background:#0C0C0C;font-family:'Segoe UI',system-ui,sans-serif;color:#fff}
+			    html,body{height:100vh;width:100%;overflow:hidden;font-family:'Segoe UI',system-ui,sans-serif;color:#fff}
 			    .row{display:flex;gap:20px;height:100vh;width:100%;padding:28px;align-items:center}
 			    .card{flex:1;height:100%;background:#1A1A1A;border:1px solid #262626;border-radius:14px;padding:26px;display:flex;flex-direction:column;gap:10px;overflow:hidden}
 			    .name{font-size:16px;font-weight:700;color:#fff}
@@ -427,6 +430,28 @@ table _Measures
 			)
 		displayFolder: Calculator
 		lineageTag: 6e7f8091-0234-4556-6778-8899aabbccdd
+
+	measure 'Page Fade Overlay HTML' =
+			"<!DOCTYPE html><html><head><meta charset='utf-8'><style>
+			*{box-sizing:border-box;margin:0;padding:0}
+			html,body{height:100%;width:100%;overflow:hidden;background:transparent}
+			.bg{position:absolute;inset:0;background-image:url('https://raw.githubusercontent.com/renatchein/xbox-gamepass/master/images/xbox-series-x-roz8agvfa6wdkxav.jpg');background-repeat:no-repeat;background-position:right center;background-size:auto 100%;-webkit-mask-image:linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,0.5) 100%);mask-image:linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,0.5) 100%)}
+			</style></head><body><div class='bg'></div></body></html>"
+		displayFolder: Shared
+		lineageTag: 00268e6b-721e-4326-b3fa-dc524c59340b
+
+	measure 'Last Update Label HTML' =
+			VAR _MaxAdded = MAX(Games[Added])
+			VAR _MaxRemoved = MAX(Games[Removed])
+			VAR _Max = IF(_MaxRemoved > _MaxAdded, _MaxRemoved, _MaxAdded)
+			RETURN
+			"<!DOCTYPE html><html><head><meta charset='utf-8'><style>
+			*{box-sizing:border-box;margin:0;padding:0}
+			html,body{height:100%;width:100%;overflow:hidden;background:transparent;font-family:'Segoe UI',system-ui,sans-serif}
+			.lu{display:flex;align-items:center;justify-content:flex-end;height:100%;width:100%;color:#9A9A9A;font-size:13px;font-weight:500;letter-spacing:0.3px}
+			</style></head><body><div class='lu'>Last Update: " & FORMAT(_Max, "yyyy/mm/dd") & "</div></body></html>"
+		displayFolder: Shared
+		lineageTag: b5d3a672-b4f1-4c56-ab24-573d4f871ed1
 
 	column x
 		isHidden
